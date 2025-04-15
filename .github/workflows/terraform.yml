@@ -1,30 +1,28 @@
-name: Terraform CI/CD
+iname: Terraform CI/CD Pipeline
 
 on:
   push:
     branches:
       - main
+  pull_request:
 
 jobs:
   terraform:
-    name: 'Terraform'
     runs-on: ubuntu-latest
 
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.5.7  # Use the version you're working with
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AKIAZQ3DOLMAAFD54URS    }}
-          aws-secret-access-key: ${{ secrets.0k9Ctc4pwQVdfn2b5G2X3kDcQ95gVzcbGfdV8fI }}
-          aws-region:${{ secrets.aws-south-1 }}
+          terraform_version: 1.6.6
 
       - name: Terraform Init
         run: terraform init
@@ -34,4 +32,5 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
+
 
